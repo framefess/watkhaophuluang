@@ -1,0 +1,47 @@
+SELECT b.quantity - br.quantity 
+FROM borrow b, borrowreturn br 
+WHERE b.id_items = br.id_items;
+
+SELECT * FROM items i 
+  INNER JOIN borrow b
+  ON i.id = b.id_items
+  INNER JOIN borrowreturn br
+  ON b.id = br.id;
+  
+
+SELECT coalesce(pur.id, so.id_items,br.id_items) as productid,  
+       coalesce(pur.quantity,0) - coalesce(so.quantity,0) - 
+       coalesce(br.quantity) as AvailableInventory
+FROM items pur
+FULL OUTER JOIN borrow so
+   on pur.id = so.id_items 
+FULL OUTER JOIN borrowreturn br
+   on pur.id = br.id_items
+   OR so.id_items = br.id_items
+GROUP BY coalesce(pur.id, so.id_items,br.id_items);
+
+
+SELECT *, (i.quantity - b.quantity+br.quantity) AS "LEFT" 
+FROM items i 
+left JOIN borrow b 
+ON i.id = b.id_items
+left JOIN borrowreturn br 
+ON b.id_items = br.id_items
+GROUP by i.id;
+
+SELECT *, (i.quantity - b.quantity+ IF(br.quantity = null, 0, br.quantity)) AS "LEFT" 
+FROM items i 
+left JOIN borrow b 
+ON i.id = b.id_items
+left JOIN borrowreturn br 
+ON b.id_items = br.id_items
+GROUP by i.id;
+
+SELECT i.id, (i.quantity - IFNULL(b.quantity,0)+ IFNULL(br.quantity, 0)) AS "LEFT" 
+FROM items i 
+left JOIN borrow b 
+ON i.id = b.id_items 
+left JOIN borrowreturn br 
+ON b.id_items = br.id_items 
+where i.id =""
+GROUP by i.id;

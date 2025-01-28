@@ -1,0 +1,10 @@
+
+SetEnv TZ Asia/Bangkok
+Options -Indexes
+DirectoryIndex index.php
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /phuluang_itemspickup/dashboard.php?path=$1 [NC,L,QSA]
+
+
